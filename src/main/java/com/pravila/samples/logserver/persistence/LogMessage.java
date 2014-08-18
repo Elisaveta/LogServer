@@ -1,4 +1,4 @@
-package com.pravila.samples.logserver.persistence.model;
+package com.pravila.samples.logserver.persistence;
 
 import java.io.Serializable;
 
@@ -7,37 +7,39 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "logmessage")
 public class LogMessage implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "ID")
-	private long id;
-
-	@Column(name = "LEVEL")
+	@Column(name = "id", nullable = false)
+	private int id;
+	
+	@Column(name = "level")
 	private String level;
-
-	@Column(name = "DATE")
+	
+	@Column(name = "date")
 	private Long date;
-
-	@Column(name = "CLASS_NAME")
+	
+	@Column(name = "class_name")
 	private String className;
-
-	@Column(name = "MESSAGE")
+	
+	@Column(name = "message")
 	private String message;
 
-	public long getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
