@@ -2,14 +2,21 @@ package com.pravila.samples.logserver;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.util.Properties;
 import java.util.Random;
 
+import org.apache.log4j.Logger;
 import org.springframework.context.Lifecycle;
 
 import com.sun.jersey.simple.container.SimpleServerFactory;
 
 public class SimpleLogServer implements Lifecycle {
-
+	
+	private static Logger logger = Logger.getLogger(SimpleLogServer.class);
+	static StringWriter stack = new StringWriter();
+	
 	@SuppressWarnings("unused")
 	private static volatile Closeable endPoint;
 	/** URI. */
@@ -20,24 +27,39 @@ public class SimpleLogServer implements Lifecycle {
 	private static Random randomGenerator;
 	@SuppressWarnings("unused")
 	private static boolean running = false;
+	
+	private static Properties configProp = new Properties();
+	InputStream in = null;
 
 	public SimpleLogServer() {
+		in = SimpleLogServer.class.getClass().getResourceAsStream(
+				"/config.properties");
+		try {
+			configProp.load(in);
+			in.close();
+		} catch (IOException e) {
+			logger.error("Caught IOException "
+					+ stack.toString());
+		}
 	}
+	
 
 	@Override
 	public void start() {
-		System.out.println("Starting logServer...");
+		
 		try {
+			logger.info("Server starting...");
 			SimpleLogServer.endPoint = SimpleServerFactory
-					.create("http://127.0.0.1:8001");
+					.create(configProp.getProperty("server.host") + ":" + configProp.getProperty("server.port"));
 			SimpleLogServer.running = true;
 			SimpleLogServer.randomGenerator = new Random();
+			logger.info("Server started!");
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Caught exception; IllegalArgumentException occured "
+					+ stack.toString());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Caught exception; IOException occured "
+					+ stack.toString());
 		}
 	}
 

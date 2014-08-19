@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional
 public class LogMessageServiceImpl implements LogMessageService {
+	
 
 	@PersistenceContext
 	private EntityManager em;
@@ -22,7 +23,6 @@ public class LogMessageServiceImpl implements LogMessageService {
 	@Transactional
 	public LogMessage save(LogMessage logMessage) {
 
-		System.out.println("Ajde legnuvajte");
 		if (logMessage.getId() == 0) {
 			em.persist(logMessage);
 			return logMessage;

@@ -1,6 +1,8 @@
 package com.pravila.samples.logserver;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -13,6 +15,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -26,6 +29,9 @@ import com.pravila.samples.logserver.persistence.LogMessageService;
 
 @Path("/json/log")
 public class CrudLogMessage {
+	
+	private static Logger logger = Logger.getLogger(CrudLogMessage.class);
+	static StringWriter stack = new StringWriter();
 
 	@Autowired
 	private static LogMessageService logMessageService;
@@ -61,20 +67,26 @@ public class CrudLogMessage {
 				message.setMessage(item.getMessage());
 
 				try {
-					logMessageService.save(message);
+					LogMessage log = logMessageService.save(message);
+					logger.info("Log message created successfully - " + log.getMessage());
 				} catch (Exception e) {
-					e.printStackTrace();
+					e.printStackTrace(new PrintWriter(stack));
+					logger.error("Caught exception; Connection failed to server "
+							+ stack.toString());
 				}
 
 			} catch (JsonParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				e.printStackTrace(new PrintWriter(stack));
+				logger.error("Caught exception; Connection failed to server "
+						+ stack.toString());
 			} catch (JsonMappingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				e.printStackTrace(new PrintWriter(stack));
+				logger.error("Caught exception; Connection failed to server "
+						+ stack.toString());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				e.printStackTrace(new PrintWriter(stack));
+				logger.error("Caught exception; Connection failed to server "
+						+ stack.toString());
 			}
 		}
 	}
@@ -93,9 +105,8 @@ public class CrudLogMessage {
 
 		RequestRunner requestRunner = new RequestRunner(jsonString);
 		executorService.execute(requestRunner);
-		System.out.println("ide tuka");
-		return Response.status(201)
-				.entity("A new podcast/resource has been created").build();
+		return Response.status(202)
+				.entity("Request has been received").build();
 
 	}
 
