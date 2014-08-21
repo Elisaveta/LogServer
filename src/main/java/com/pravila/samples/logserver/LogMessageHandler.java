@@ -27,23 +27,29 @@ import com.pravila.samples.logserver.config.PersistenceJPAConfig;
 import com.pravila.samples.logserver.persistence.LogMessage;
 import com.pravila.samples.logserver.persistence.LogMessageService;
 
+/**
+ * 
+ * @author Elisaveta Manasieva
+ * @version 1.0.0
+ * class which handles logging requests from client 	
+ *
+ */
 @Path("/json/log")
-public class CrudLogMessage {
-	
-	private static Logger logger = Logger.getLogger(CrudLogMessage.class);
+public class LogMessageHandler {
+
+	private static Logger logger = Logger.getLogger(LogMessageHandler.class);
 	static StringWriter stack = new StringWriter();
 
 	@Autowired
 	private static LogMessageService logMessageService;
+	ApplicationContext ctx;
 
-	@SuppressWarnings("resource")
-	public static void main(String[] args) {
-		ApplicationContext ctx = new AnnotationConfigApplicationContext(
+	public LogMessageHandler() {
+		 ctx = new AnnotationConfigApplicationContext(
 				PersistenceJPAConfig.class);
 		logMessageService = ctx.getBean(LogMessageService.class);
-
-		SimpleLogServer server = new SimpleLogServer();
-		server.start();
+		executorService = new ThreadPoolExecutor(0, THREAD_POOL_SIZE, 60L,
+				TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
 	}
 
 	public String jsonRequest = null;
@@ -66,27 +72,22 @@ public class CrudLogMessage {
 				message.setLevel(item.getLevel());
 				message.setMessage(item.getMessage());
 
-				try {
-					LogMessage log = logMessageService.save(message);
-					logger.info("Log message created successfully - " + log.getMessage());
-				} catch (Exception e) {
-					e.printStackTrace(new PrintWriter(stack));
-					logger.error("Caught exception; Connection failed to server "
-							+ stack.toString());
+				LogMessage log = logMessageService.save(message);
+				if (log != null) {
+					logger.info("Log message created successfully - "
+							+ log.getMessage());
 				}
-
 			} catch (JsonParseException e) {
 				e.printStackTrace(new PrintWriter(stack));
-				logger.error("Caught exception; Connection failed to server "
+				logger.error("Caught JsonParseException exception "
 						+ stack.toString());
 			} catch (JsonMappingException e) {
 				e.printStackTrace(new PrintWriter(stack));
-				logger.error("Caught exception; Connection failed to server "
+				logger.error("Caught JsonMappingException exception "
 						+ stack.toString());
 			} catch (IOException e) {
 				e.printStackTrace(new PrintWriter(stack));
-				logger.error("Caught exception; Connection failed to server "
-						+ stack.toString());
+				logger.error("Caught IOException exception " + stack.toString());
 			}
 		}
 	}
@@ -100,13 +101,9 @@ public class CrudLogMessage {
 	@Produces("application/json")
 	@Transactional
 	public Response getLogMessage(String jsonString) {
-		executorService = new ThreadPoolExecutor(0, THREAD_POOL_SIZE, 60L,
-				TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
-
 		RequestRunner requestRunner = new RequestRunner(jsonString);
 		executorService.execute(requestRunner);
-		return Response.status(202)
-				.entity("Request has been received").build();
+		return Response.status(202).entity("Request has been received").build();
 
 	}
 

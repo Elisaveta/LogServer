@@ -1,5 +1,11 @@
 package com.pravila.samples.logserver;
 
+/**
+ * 
+ * @author Elisaveta Manasieva
+ * @version 1.0.0
+ *
+ */
 public class LogItem {
 
 	private String level;

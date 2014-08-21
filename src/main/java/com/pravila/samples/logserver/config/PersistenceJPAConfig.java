@@ -24,7 +24,13 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.google.common.base.Preconditions;
 import com.pravila.samples.logserver.persistence.LogMessageService;
 import com.pravila.samples.logserver.persistence.LogMessageServiceImpl;
-
+/**
+ * 
+ * @author Elisaveta Manasieva
+ * @version 1.0.0
+ * application context configuration
+ *
+ */
 @Configuration
 @EnableTransactionManagement
 @PropertySource({ "classpath:persistence-mysql.properties" })

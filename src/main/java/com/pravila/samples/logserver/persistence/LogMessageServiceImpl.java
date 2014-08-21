@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Plain JPA implementation of {@link LogMessageService}.
  * 
- * 
  */
 @Repository
 @Transactional
