@@ -27,10 +27,8 @@ public class LogMessageServiceImpl implements LogMessageService {
 		if (logMessage.getId() == 0) {
 			try {
 				em.persist(logMessage);
-				logger.info(" " + logMessage.getLevel() + " " +logMessage.getDate() + " " + logMessage.getClassName() + " " + logMessage.getMessage());
-				
 			} catch (Exception e) {
-				logger.info(logMessage);
+				logger.info(" " + logMessage.getLevel() + " " +logMessage.getDate() + " " + logMessage.getClassName() + " " + logMessage.getMessage());
 			}
 
 		} else {
