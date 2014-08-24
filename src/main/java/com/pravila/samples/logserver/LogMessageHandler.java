@@ -38,7 +38,7 @@ import com.pravila.samples.logserver.persistence.LogMessageService;
 public class LogMessageHandler {
 
 	private static Logger logger = Logger.getLogger(LogMessageHandler.class);
-	static StringWriter stack = new StringWriter();
+	private static StringWriter stack = new StringWriter();
 
 	@Autowired
 	private static LogMessageService logMessageService;
@@ -72,11 +72,7 @@ public class LogMessageHandler {
 				message.setLevel(item.getLevel());
 				message.setMessage(item.getMessage());
 
-				LogMessage log = logMessageService.save(message);
-				if (log != null) {
-					logger.info("Log message created successfully - "
-							+ log.getMessage());
-				}
+				logMessageService.save(message);
 			} catch (JsonParseException e) {
 				e.printStackTrace(new PrintWriter(stack));
 				logger.error("Caught JsonParseException exception "
@@ -103,7 +99,7 @@ public class LogMessageHandler {
 	public Response getLogMessage(String jsonString) {
 		RequestRunner requestRunner = new RequestRunner(jsonString);
 		executorService.execute(requestRunner);
-		return Response.status(202).entity("Request has been received").build();
+		return Response.status(201).entity(jsonString).build();
 
 	}
 

@@ -3,6 +3,7 @@ package com.pravila.samples.logserver.persistence;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,20 +14,27 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional
 public class LogMessageServiceImpl implements LogMessageService {
-	
+
+	private static Logger logger = Logger.getLogger(LogMessageServiceImpl.class);
 
 	@PersistenceContext
 	private EntityManager em;
 
 	@Override
 	@Transactional
-	public LogMessage save(LogMessage logMessage) {
+	public void save(LogMessage logMessage) {
 
 		if (logMessage.getId() == 0) {
-			em.persist(logMessage);
-			return logMessage;
+			try {
+				em.persist(logMessage);
+				logger.info(" " + logMessage.getLevel() + " " +logMessage.getDate() + " " + logMessage.getClassName() + " " + logMessage.getMessage());
+				
+			} catch (Exception e) {
+				logger.info(logMessage);
+			}
+
 		} else {
-			return em.merge(logMessage);
+			em.merge(logMessage);
 		}
 	}
 

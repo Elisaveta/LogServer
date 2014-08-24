@@ -2,5 +2,5 @@ package com.pravila.samples.logserver.persistence;
 
 public interface LogMessageService {
 
-	LogMessage save(LogMessage logMessage);
+	void save(LogMessage logMessage);
 }
