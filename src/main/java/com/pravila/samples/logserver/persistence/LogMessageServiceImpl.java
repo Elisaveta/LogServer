@@ -15,7 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class LogMessageServiceImpl implements LogMessageService {
 
-	private static Logger logger = Logger.getLogger(LogMessageServiceImpl.class);
+	private static Logger logger = Logger
+			.getLogger(LogMessageServiceImpl.class);
 
 	@PersistenceContext
 	private EntityManager em;
@@ -28,7 +29,10 @@ public class LogMessageServiceImpl implements LogMessageService {
 			try {
 				em.persist(logMessage);
 			} catch (Exception e) {
-				logger.info(" " + logMessage.getLevel() + " " +logMessage.getDate() + " " + logMessage.getClassName() + " " + logMessage.getMessage());
+				logger.info(" " + logMessage.getLevel() + " "
+						+ logMessage.getDate() + " "
+						+ logMessage.getClassName() + " "
+						+ logMessage.getMessage());
 			}
 
 		} else {

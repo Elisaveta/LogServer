@@ -52,8 +52,6 @@ public class LogMessageHandler {
 				TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
 	}
 
-	public String jsonRequest = null;
-
 	public class RequestRunner implements Runnable {
 		public String request = null;
 

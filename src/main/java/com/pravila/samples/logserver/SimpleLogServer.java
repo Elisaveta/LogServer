@@ -1,11 +1,9 @@
 package com.pravila.samples.logserver;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.Properties;
-import java.util.Random;
 
 import org.apache.log4j.Logger;
 import org.springframework.context.Lifecycle;
@@ -22,17 +20,6 @@ public class SimpleLogServer implements Lifecycle {
 
 	private static Logger logger = Logger.getLogger(SimpleLogServer.class);
 	static StringWriter stack = new StringWriter();
-
-	@SuppressWarnings("unused")
-	private static volatile Closeable endPoint;
-	/** URI. */
-	@SuppressWarnings("unused")
-	private String uri;
-	/** Random Number Generator. */
-	@SuppressWarnings("unused")
-	private static Random randomGenerator;
-	@SuppressWarnings("unused")
-	private static boolean running = false;
 
 	private static Properties configProp = new Properties();
 	InputStream in = null;
@@ -56,12 +43,8 @@ public class SimpleLogServer implements Lifecycle {
 
 		try {
 			logger.info("Server starting...");
-			SimpleLogServer.endPoint = SimpleServerFactory.create(configProp
-					.getProperty("server.host")
-					+ ":"
-					+ configProp.getProperty("server.port"));
-			SimpleLogServer.running = true;
-			SimpleLogServer.randomGenerator = new Random();
+			SimpleServerFactory.create(configProp.getProperty("server.host")
+					+ ":" + configProp.getProperty("server.port"));
 			logger.info("Server started!");
 		} catch (IllegalArgumentException e) {
 			logger.error("Caught IllegalArgumentException exception "
